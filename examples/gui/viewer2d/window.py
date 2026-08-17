@@ -111,7 +111,7 @@ class QtViewerWindow(QMainWindow):
         self.btn_config.setObjectName("btnConfig")
         self.btn_config.clicked.connect(self._select_config)
         bar.addWidget(self.btn_config)
-        self.config_edit = QLineEdit("./config/ddjx01.json")
+        self.config_edit = QLineEdit("box")
         bar.addWidget(self.config_edit, 1)
 
         self.btn_reset = QPushButton("重置")

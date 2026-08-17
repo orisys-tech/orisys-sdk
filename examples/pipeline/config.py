@@ -17,7 +17,7 @@ def mesh_threshold(mesh_map: str, threshold: float | None) -> float:
 @dataclass
 class PipelineConfig:
     video: str = "0"
-    config: str = "./config/dd02-ov.json"
+    config: str = "finger"
     calib: str | None = None
     export_dir: str = DEFAULT_FINGER_EXPORT_DIR
     csv_save_dir: str = "./outputs/csv"

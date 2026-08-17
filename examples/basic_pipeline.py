@@ -7,7 +7,7 @@
 3. 按需计算接触区域
 4. 读取并可视化结果
 
-SDK version: 0.4.2
+SDK version: 0.4.3
 """
 import os
 os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0" 
@@ -19,7 +19,7 @@ import argparse
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--video","-v", type=str, default="0", help="视频源：摄像头编号或视频文件路径")
-    parser.add_argument("--config","-c", type=str, default="./config/ddjx01.json", help="配置文件名称或路径")
+    parser.add_argument("--config","-c", type=str, default="box", help="配置文件名称或路径")
     parser.add_argument("--verbose","-verbose", type=bool, default=True, help="是否输出详细日志")
     args = parser.parse_args()
 

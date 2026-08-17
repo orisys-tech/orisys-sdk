@@ -37,7 +37,7 @@ def open_sensor(video: str, config: str, cal: str, verbose: bool):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--video", "-v", type=str, default="0", help="视频源：摄像头编号或视频文件路径")
-    parser.add_argument("--config", "-c", type=str, default="./config/ddjx01.json", help="配置文件名称或路径")
+    parser.add_argument("--config", "-c", type=str, default="box", help="配置文件名称或路径")
     parser.add_argument("--cal", "-cal", type=str, default="./config/ddjx01.npy", help="标定文件路径")
     parser.add_argument("--verbose", "-verbose", type=bool, default=True, help="是否输出详细日志")
     args = parser.parse_args()

@@ -25,7 +25,7 @@ pip install orisys-{version}-{python-version}-{python-version}-{os}_{machine}.wh
 ```
 如
 ```bash
-pip install orisys-0.4.2-cp310-cp310-win_amd64.whl
+pip install orisys-0.4.3-cp310-cp310-win_amd64.whl
 ```
 
 3. **安装 CuPy（根据您的 CUDA 版本选择）：**
@@ -63,7 +63,7 @@ print(orisys.__version__)
 ### 输入参数
 
 * **vid_src** (`int | str`, 必填): 传感器 ID、相机编号或视频路径。默认为 `0`。  
-* **config_name** (`str`，可选): 传感器配置文件名称或 `json` 文件路径，用于加载对应的参数配置；例如 `ddjx01` 或 `./config/ddjx01.json`。  
+* **config_name** (`str`，可选): 传感器配置文件名称或 `json` 文件路径，用于加载对应的参数配置；例如 `box` 或 `./config/box.json`。  
 * **cal_path** (`str`，可选，已弃用): 该参数仅为兼容旧代码保留，当前版本中不再使用，传入后也会被忽略。  
 * **backend** (`str`，可选): 光流场解耦计算后端，默认为 `auto`，可选`cupy`,`opencl`,`cpu`。  
 * **verbose** (`bool`，可选): 是否输出初始化及运行过程中的详细日志信息，默认为 `False`。  
@@ -262,7 +262,7 @@ flow = sensor.read_info(sensor.info.VRAW)
 #### 输入参数
 
 * **export_dir** (`str`，可选): 手指导出资产目录，默认值来自 `orisys.finger.DEFAULT_FINGER_EXPORT_DIR`。目录下通常需要包含 `mesh.npz`、`camera_intrinsics.npz`、`world_to_cam.npy`。
-* **config** (`str`，可选): Orisys 配置文件路径，默认 `./config/dd02-ov.json`。
+* **config** (`str`，可选): Orisys 配置文件名称或路径，默认 `finger`。
 * **map_cache** (`str`，可选): UV 展开缓存文件路径，默认值来自 `orisys.finger.DEFAULT_FINGER_MAP_CACHE`。
 * **source_scale** (`float`，可选): 输入相机分辨率缩放比例；未提供时根据配置自动推断。
 * **calib** (`str | None`，可选): 外部相机标定文件路径；未提供时优先使用导出资产中的内参。
@@ -282,7 +282,7 @@ flow = sensor.read_info(sensor.info.VRAW)
 from orisys.finger import FingerRuntime
 
 runtime = FingerRuntime.open(
-    config="./config/dd02-ov.json",
+    config="finger",
     video=0,
     verbose=True,
 )
@@ -404,7 +404,7 @@ import orisys
 from orisys.finger import FingerRuntime
 
 runtime = FingerRuntime.open(
-    config="./config/dd02-ov.json",
+    config="finger",
     video=0,
     verbose=True,
 )

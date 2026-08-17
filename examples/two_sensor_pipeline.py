@@ -18,7 +18,7 @@
 - Windows 下必须在 if __name__ == '__main__' 中调用 mp.freeze_support()
 - 每个传感器进程都会占用独立的 GPU 显存
 
-SDK version: 0.4.2
+SDK version: 0.4.3
 """
 import os
 os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0" 
@@ -138,12 +138,12 @@ def main():
         {
             'sensor_id': 0,
             'vid_src': args.video1,
-            'config_name': './config/ddjx01.json'
+            'config_name': 'box'
         },  
         {
             'sensor_id': 1,
             'vid_src': args.video2,  # 可替换为其他视频源或摄像头索引
-            'config_name': './config/ddjx01.json'
+            'config_name': 'box'
         },
     ]
 

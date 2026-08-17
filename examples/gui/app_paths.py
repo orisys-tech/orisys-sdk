@@ -27,7 +27,17 @@ def resource_path(*parts: str) -> Path:
 
 
 def default_config_path() -> str:
-    return str(resource_path("config", "dd02-ov.json"))
+    """Default ORY-FINGER config name (packaged stem ``finger``)."""
+    return "finger"
+
+
+def require_gui_extras() -> None:
+    try:
+        import open3d  # noqa: F401
+        from PyQt5 import QtWidgets  # noqa: F401
+        import pyqtgraph  # noqa: F401
+    except ImportError as exc:
+        raise SystemExit('GUI example requires: pip install "orisys[gui]"') from exc
 
 
 def configure_frozen_runtime() -> None:

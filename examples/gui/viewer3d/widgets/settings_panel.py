@@ -137,7 +137,7 @@ class SettingsPanelWidget(QWidget):
         root.addWidget(self._caption("Config"))
         config_row = QHBoxLayout()
         config_row.setSpacing(6)
-        self.config_edit = QLineEdit("./config/dd02-ov.json")
+        self.config_edit = QLineEdit("finger")
         config_row.addWidget(self.config_edit, 1)
         self.btn_browse_config = QPushButton("…")
         self.btn_browse_config.setFixedWidth(32)

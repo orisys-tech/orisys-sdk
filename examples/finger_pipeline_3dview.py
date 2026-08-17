@@ -15,10 +15,16 @@ import sys
 
 os.environ.setdefault("OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS", "0")
 
-from gui.app_paths import configure_frozen_runtime, default_config_path, ensure_examples_import_path
+from gui.app_paths import (
+    configure_frozen_runtime,
+    default_config_path,
+    ensure_examples_import_path,
+    require_gui_extras,
+)
 
 configure_frozen_runtime()
 ensure_examples_import_path()
+require_gui_extras()
 
 from gui import run_dashboard
 from pipeline import PipelineConfig
