@@ -1,4 +1,4 @@
-# Orisys SDK（编译发布版）
+# Orisys SDK
 
 本仓库面向 **GitHub Release** 用户，提供 **已编译** 的 Orisys SDK 安装说明。  
 
