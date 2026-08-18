@@ -1,5 +1,5 @@
 """
-ORY-BOX：单传感器基础流程
+ORY-MINI：单传感器基础流程
 
 本示例演示 Orisys SDK 的标准处理流程：
 1. 初始化传感器（摄像头或视频文件）
@@ -19,7 +19,7 @@ import argparse
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--video","-v", type=str, default="0", help="视频源：摄像头编号或视频文件路径")
-    parser.add_argument("--config","-c", type=str, default="box", help="配置文件名称或路径")
+    parser.add_argument("--config","-c", type=str, default="mini", help="配置文件名称或路径")
     parser.add_argument("--verbose","-verbose", type=bool, default=True, help="是否输出详细日志")
     args = parser.parse_args()
 
@@ -72,7 +72,7 @@ def main():
             grid_spacing=20,
             arrow_scale=1.0
         )
-        cv2.imshow("arrow", arrows)
+        cv2.imshow("arrows", arrows)
         
         # 步骤 3.2：显示接触区域和质心
         image_with_foe = orisys.util.draw_contact(img, contour, centroid)

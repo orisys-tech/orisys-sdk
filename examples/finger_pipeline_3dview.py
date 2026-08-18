@@ -1,19 +1,28 @@
 #!/usr/bin/env python3
 """
-UV-unroll finger tactile pipeline with unified Qt dashboard.
+ORY-FINGER：UV-unroll finger tactile pipeline with unified Qt dashboard.
 
 Where to customize the GUI:
-  Layout (sizes, proportions)  ->  examples/gui/layout.py   <-- edit here
-  Colors / QSS                 ->  examples/gui/styles.py
-  Widget rendering logic       ->  examples/gui/widgets/
-  Window behavior              ->  examples/gui/dashboard.py
+  Layout (sizes, proportions)  ->  examples/gui/viewer3d/layout.py
+  Colors / QSS                 ->  examples/gui/viewer3d/styles.py
+  Widget rendering logic       ->  examples/gui/viewer3d/widgets/
+  Window behavior              ->  examples/gui/viewer3d/dashboard.py
+
+Recommended entry:
+  python examples/finger_pipeline_3dview.py --video 0 --config finger
 """
 
 import argparse
 import os
 import sys
+from pathlib import Path
 
 os.environ.setdefault("OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS", "0")
+
+# Make shared packages importable when launched as a file path.
+_EXAMPLES_DIR = Path(__file__).resolve().parent
+if str(_EXAMPLES_DIR) not in sys.path:
+    sys.path.insert(0, str(_EXAMPLES_DIR))
 
 from gui.app_paths import (
     configure_frozen_runtime,

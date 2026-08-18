@@ -1,66 +1,19 @@
-# orisys API 文档
+---
+title: API Reference
+description: Orisys SDK Python API 中文参考
+---
 
-本文件提供了 `orisys` 套件的中文文档
+# API Reference
 
-## 准备 Python 开发环境
-推荐下载 Anaconda，并使用Python 3.10 
-```
-# 创建并激活虚拟环境
-conda create -n orisys python=3.10
-conda activate orisys
-```
-## 安装 CUDA Toolkit 和 cuDNN
-在官方链接下载和安装：https://developer.nvidia.com/cuda/toolkit
-或
-在Anaconda环境中安装（例子使用cuda12.9）：
-https://anaconda.org/channels/nvidia/packages/cuda/overview
-```
-conda install nvidia/label/cuda-12.9.0::cuda-toolkit nvidia::cudnn
-```
-## SDK安装方法
-1. 根据系统（win / linux）,平台(amd64, aarch64), python(如p38、p39、p310) 版本下载对应的`.whl`文件
-2. 运行pip命令安装：
-```bash
-pip install orisys-{version}-{python-version}-{python-version}-{os}_{machine}.whl
-```
-如
-```bash
-pip install orisys-0.4.3-cp310-cp310-win_amd64.whl
-```
+本文件提供 `orisys` 套件的 Python API 中文参考。安装、CUDA、CuPy 与运行示例的基础步骤请参考 [快速开始](./get_started.md)。
 
-3. **安装 CuPy（根据您的 CUDA 版本选择）：**
-   
-   **方法 1：使用 extras（推荐）**
-   ```bash
-   # 对于 CUDA 12.x
-   pip install orisys[cuda12]
-   
-   # 对于 CUDA 13.x
-   pip install orisys[cuda13]
-   ```
-   
-   **方法 2：手动安装**
-   ```bash
-   # 对于 CUDA 12.x
-   pip install cupy-cuda12x>=12.3.0
-   
-   # 对于 CUDA 13.x
-   pip install cupy-cuda13x>=13.0.0
-   ```
+## Sensor API
 
-4. 测试导入：
-```python
-import orisys
-print(orisys.__version__)
-```
-
-***
-
-## `Sensor` 类别
-### 描述
+### `Sensor` 类别
+#### 描述
 `orisys`套件的核心类，用于从视频文件或实时摄像头中读取传感器图像，创建一个具体的传感器对象（实例）。并完成形变、光流及力信息的计算与管理。
 
-### 输入参数
+#### 输入参数
 
 * **vid_src** (`int | str`, 必填): 传感器 ID、相机编号或视频路径。默认为 `0`。  
 * **config_name** (`str`，可选): 传感器配置文件名称或 `json` 文件路径，用于加载对应的参数配置；例如 `box` 或 `./config/box.json`。  
@@ -69,9 +22,9 @@ print(orisys.__version__)
 * **verbose** (`bool`，可选): 是否输出初始化及运行过程中的详细日志信息，默认为 `False`。  
 
   
-### 返回
+#### 返回
 * `Sensor` 实例，用于后续图像采集、形变计算和数据读取操作。
-### 示例
+#### 示例
 
 ```python
 # Example 1：  用相机编号创建
@@ -82,63 +35,62 @@ sensor = Sensor(0)
 sensor = Sensor("/data/data.mp4")
 ```
 
-***
+### `Sensor.get_img` 方法
 
-## 2. `Sensor.get_img` 方法
-
-### 描述
+#### 描述
 
 采集并预处理一帧图像并存到`Sensor` 类别中。
 
 
-### 返回
+#### 返回
 * `bool`：是否成功读取图像。
 
-### 状态更新
+#### 状态更新
 * 成功时更新`sensor`类里面的`sensor.img`。处理后的BGR格式图像(`uint8`，尺寸为json文件中`resolution_stitch`对应分辨率)。
-### 示例
+#### 示例
 
 ```python
 sensor.get_img() 
 ```
-***
+### `Sensor.compute_deformation` 方法
 
-## 3. `Sensor.compute_deformation` 方法
-
-### 描述
+#### 描述
 
 基于当前帧图像计算光流/形变向量场，并通过 HHD 分解将形变场分解为法向/切向分量，同时估计法向力、切向力与扭矩等标量输出。该方法会更新
 `sensor`的形变场与力相关状态，并返回当前帧的光流场。
 调用前置条件：需要先通过`get_img()`成功更新图像。
 
-### 输入参数
-* **check_motion**(`bool`，可选): 为 `True` 时先根据光流判断是否有运动，有运动才做 HHD 分解；为 `False` 时每帧都做 HHD。默认 `True`。
-* **threshold**(`float`，可选): **check_motion** 功能的阈值，默认为`6`。
-* **tail_frames** (`int`，可选):  光流变化低于阈值后继续解算多少帧，确保传感器回复，，默认为 `10`.
+#### 输入参数
+* **decompose** (`bool`，可选): 是否在计算光流后继续执行 HHD 分解，默认 `True`。
+* **check_motion** (`bool`，可选): 是否启用运动检测门控。当前不推荐依赖该功能；新代码建议显式传入 `False`，让每帧都执行 HHD 分解。为兼容旧代码，函数默认值仍为 `True`。
 
-### 返回
+#### 兼容参数（暂不推荐）
 
-* `bool`：是否接触到物体，如果**check_motion**为`False`时返回`None`。
+以下参数只在 `check_motion=True` 时生效。由于运动检测门控目前不稳定，建议在新代码中暂时不要使用：
 
-### 示例
+* **threshold** (`float`，可选): 运动检测阈值，默认 `6`。
+* **tail_frames** (`int`，可选): 运动低于阈值后继续解算多少帧，默认 `10`。
+
+#### 返回
+
+* `None`: 当 `check_motion=False` 时返回。推荐用法下不要依赖该返回值判断接触状态。
+* `bool`: 仅当 `check_motion=True` 时返回运动检测结果；该模式目前暂不推荐。
+
+#### 示例
 
 ```python
 sensor.get_img()
-
-is_touched = sensor.compute_deformation(check_motion=True, threshold=6)
-# 步骤 2.3: 计算触碰点 
-if is_touched:
-    sensor.compute_contact()
+sensor.compute_deformation(check_motion=False)
+sensor.compute_contact()
 ```
-***
-## 4. `Sensor.compute_contact` 方法
+### `Sensor.compute_contact` 方法
 
-### 描述
+#### 描述
 基于已计算的法向形变场进行接触区域分析，输出接触质心与轮廓等信息，并生成接触深度图，默认配置在`json`文件中，可按需调节。
 
 调用前置条件：需先执行`compute_deformation()`。
 
-### 返回
+#### 返回
 `dict`为接触分析结果字典，至少包含以下键：
 
 * **expansion_mask**: 扩张区域掩码（`np.ndarray`）。
@@ -148,12 +100,12 @@ if is_touched:
 * **centroid_found**: 是否检测到接触区域（`bool`）。
 * **contour**: 最大轮廓或轮廓列表（可选字段，存在时返回）。
 
-### 状态更新
+#### 状态更新
 
 * **sensor.centroid**: 接触质心（单点为 `(x, y)`，多点为列表）。
 * **sensor.centroid_found**: 是否找到质心（`bool`）。
 
-### 示例
+#### 示例
 ```python
 sensor.compute_contact()
 centroid, contour, depth = sensor.read_info(
@@ -162,19 +114,18 @@ centroid, contour, depth = sensor.read_info(
     sensor.info.DEPTH,
 )
 ```
-***
-## 4. `Sensor.read_info` 方法
+### `Sensor.read_info` 方法
 
-### 描述
+#### 描述
 
 按指定的信息类型（`sensor.info`枚举值）批量读取传感器状态数据，并按传入顺序返回对应值的元组。
 该方法通常用于在完成形变计算后，读取光流场、分量场、力、帧率等信息。
 
-### 输入参数
+#### 输入参数
 
 * **args**: 任意数量的 `Sensor.info` 枚举，用于指定需要获取的数据类型。支持的枚举值及对应数据如下：
 
-### 支持的枚 info keys：
+#### 支持的 info keys
 
 向量/图像类
 
@@ -188,6 +139,9 @@ centroid, contour, depth = sensor.read_info(
 * FNORMAL: 法向力，`float`。
 * FSHEARX: X切向力，`float`。
 * FSHEARY: Y切向力，`float`。
+* FNORMAL_RAW: 未经过低通滤波的原始法向力，`float`。
+* FSHEARX_RAW: 未经过低通滤波的原始 X 切向力，`float`。
+* FSHEARY_RAW: 未经过低通滤波的原始 Y 切向力，`float`。
 * FPS: 输出帧率，`float`。
 * CENTROID： 触碰点的坐标，(x, y)。
 * CONTOUR： 触碰区域轮廓，`np.ndarray`, shape=(H, W), 未生成时返回`np.empty`
@@ -198,7 +152,7 @@ centroid, contour, depth = sensor.read_info(
 
 注：H/W 由当前`json`文件中的`resolution_stitch`配置分辨率决定。
 
-### 返回
+#### 返回
 
 `Tuple`
 
@@ -210,7 +164,7 @@ centroid, contour, depth = sensor.read_info(
 - 标量类数据：`float`
 - 时间戳：`str`（`TIMESTAMP`，格式为 `HH:MM:SS`）
 
-### 示例
+#### 示例
 ```python
 # Example 1：读取标量数据
 fps, fn, fx, fy = sensor.read_info(
@@ -223,20 +177,112 @@ fps, fn, fx, fy = sensor.read_info(
 # Example 2： 读取单个向量场（注意解包方式）
 flow = sensor.read_info(sensor.info.VRAW)
 ```
-***
+### `Sensor.disconnect` 方法
 
-## 5. `Sensor.disconnect` 方法
-
-### 描述
+#### 描述
 
 释放传感器相关资源并停止后台异步线程。 调用后将关闭视频/摄像头输入源，并销毁所有 OpenCV 窗口。
 
 建议在程序退出前调用以确保资源被正确释放。
 
-***
-***
+### `Sensor.configure` 低通滤波设置
 
-## `orisys.finger` 手指 UV pipeline
+#### 描述
+
+运行时更新传感器设置，无需重新连接相机。常用于开启力信号低通滤波，降低 `FNORMAL`、`FSHEARX`、`FSHEARY` 的高频噪声。
+
+默认采样率按 30 fps 计算，推荐低通截止频率为 5 Hz：
+
+```python
+sensor.configure(lowpass_cutoff_hz=5.0, lowpass_sample_rate_hz=30.0)
+```
+
+注意：`lowpass_cutoff_hz` 必须小于 Nyquist 频率，即 `lowpass_sample_rate_hz / 2`。例如 30 fps 时，截止频率必须小于 15 Hz。
+
+#### 输入参数
+
+* **lowpass_cutoff_hz** (`float`，可选): 力信号低通截止频率，单位 Hz。`0` 表示关闭滤波；正数默认开启滤波。
+* **lowpass_sample_rate_hz** (`float`，可选): 力信号采样率，默认 `30.0`。
+* **lowpass_order** (`int`，可选): Butterworth 滤波器阶数，默认 `2`。
+* **lowpass_enabled** (`bool`，可选): 显式开启或关闭低通滤波。
+* **hhd_downsample** (`int`，可选): HHD 解算下采样倍数，需为 `>= 1` 的整数，配置默认 `3`。
+
+#### 读取结果
+
+开启低通滤波后，`read_info()` 读取的力输出会被滤波：
+
+```python
+fn, fx, fy = sensor.read_info(
+    sensor.info.FNORMAL,
+    sensor.info.FSHEARX,
+    sensor.info.FSHEARY,
+)
+```
+
+原始力输出仍可通过 `FNORMAL_RAW`、`FSHEARX_RAW`、`FSHEARY_RAW` 读取，便于调试或对比。
+
+## Signal Processing API
+
+### `orisys.signal_processing.lowpass_filter` 函数
+
+#### 描述
+
+对一维、等间隔采样数据执行零相位 Butterworth 低通滤波，适合示例程序或图表中对历史数据做平滑处理。
+
+默认参数为 `cutoff_hz=5.0`、`sample_rate_hz=30.0`、`order=2`。这表示在 30 fps 数据上使用 5 Hz 低通滤波。
+
+#### 输入参数
+
+* **data**: 一维数据序列。
+* **cutoff_hz** (`float`，可选): 截止频率，默认 `5.0`。传入 `0` 时不做滤波并返回数据副本。
+* **sample_rate_hz** (`float`，可选): 采样率，默认 `30.0`。
+* **order** (`int`，可选): Butterworth 滤波器阶数，默认 `2`。
+
+#### 返回
+
+* `np.ndarray`: 滤波后的 `float64` 数组。
+
+#### 示例
+
+```python
+from orisys.signal_processing import lowpass_filter
+
+filtered_force = lowpass_filter(force_values, cutoff_hz=5.0, sample_rate_hz=30.0)
+```
+
+### `orisys.signal_processing.LowpassFilter` 类别
+
+#### 描述
+
+有状态的因果 Butterworth 低通滤波器，适合逐帧处理实时数据。它会保留上一帧的滤波状态，并通过 `process()` 一次处理一个多通道样本。
+
+`Sensor.configure()` 内部使用该类来滤波力信号。构造时默认 `cutoff_hz=0.0`，表示关闭滤波；若要按 30 fps 使用推荐滤波，设置 `cutoff_hz=5.0`、`sample_rate_hz=30.0`。
+
+#### 输入参数
+
+* **cutoff_hz** (`float`，可选): 截止频率，默认 `0.0`，表示关闭滤波。
+* **sample_rate_hz** (`float`，可选): 采样率，默认 `30.0`。
+* **order** (`int`，可选): Butterworth 滤波器阶数，默认 `2`。
+* **n_channels** (`int`，可选): 每个样本的通道数，默认 `3`。
+
+#### 常用方法
+
+* **configure(...)**: 运行时更新 `cutoff_hz`、`sample_rate_hz` 或 `order`。
+* **reset(x0=None)**: 清除滤波器状态；传入 `x0` 时会用该样本初始化稳态。
+* **process(values)**: 滤波一个多通道样本，返回 shape 为 `(n_channels,)` 的 `np.ndarray`。
+
+#### 示例
+
+```python
+from orisys.signal_processing import LowpassFilter
+
+filt = LowpassFilter(cutoff_hz=5.0, sample_rate_hz=30.0, n_channels=3)
+filtered = filt.process([fnormal, fshearx, fsheary])
+```
+
+## Finger Pipeline API
+
+### `orisys.finger` 手指 UV pipeline
 
 `examples/finger_pipeline.py` 展示了一个更适合手指/单相机场景的高层 API：
 
@@ -247,7 +293,7 @@ flow = sensor.read_info(sensor.info.VRAW)
 
 相比直接使用 `Sensor`，`FingerRuntime` 已封装了视频读取、相机尺寸设置、UV 展开和有效区域掩码传递，更适合作为手指 2D/3D 示例与上层应用的入口。
 
-### 1. `FingerRuntime.open` 方法
+### `FingerRuntime.open` 方法
 
 #### 描述
 
@@ -288,7 +334,7 @@ runtime = FingerRuntime.open(
 )
 ```
 
-### 2. `FingerRuntime` 常用属性
+### `FingerRuntime` 常用属性
 
 * **runtime.geometry**: `FingerGeometry`，包含输入/输出分辨率、导出资产路径、相机内参、缓存路径等一次性初始化结果。
 * **runtime.domain**: UV 展开域对象，内部包含 remap、valid mask 以及可选 surface 数据。
@@ -296,7 +342,7 @@ runtime = FingerRuntime.open(
 * **runtime.capture**: OpenCV `VideoCapture` 对象。
 * **runtime.valid_mask**: 当前 UV 域有效像素掩码。
 
-### 3. `FingerRuntime.read_source` 方法
+### `FingerRuntime.read_source` 方法
 
 #### 描述
 
@@ -308,7 +354,7 @@ runtime = FingerRuntime.open(
   * **ok** (`bool`): 是否成功读取。
   * **frame** (`np.ndarray | None`): 原始 BGR 帧。
 
-### 4. `FingerRuntime.process_frame` 方法
+### `FingerRuntime.process_frame` 方法
 
 #### 描述
 
@@ -323,7 +369,7 @@ runtime = FingerRuntime.open(
 
 * `np.ndarray`: 展开后的触觉图像。`color=False` 时通常为单通道灰度图；`color=True` 时为 BGR 图。
 
-### 5. `FingerRuntime.grab_and_process` 方法
+### `FingerRuntime.grab_and_process` 方法
 
 #### 描述
 
@@ -339,7 +385,7 @@ runtime = FingerRuntime.open(
   * **ok** (`bool`): 是否成功读取并处理。
   * **unrolled** (`np.ndarray | None`): 展开后的触觉图像。
 
-### 6. `FingerRuntime.get_img` 方法
+### `FingerRuntime.get_img` 方法
 
 #### 描述
 
@@ -353,7 +399,7 @@ runtime = FingerRuntime.open(
 
 * `np.ndarray | None`
 
-### 7. `FingerRuntime.warmup` 方法
+### `FingerRuntime.warmup` 方法
 
 #### 描述
 
@@ -369,13 +415,13 @@ runtime = FingerRuntime.open(
   * **ok** (`bool`): 是否成功完成 warmup 前的采集。
   * **unrolled** (`np.ndarray | None`): warmup 时得到的展开图。
 
-### 8. `FingerRuntime.close` 方法
+### `FingerRuntime.close` 方法
 
 #### 描述
 
 释放内部 `VideoCapture` 并调用 `runtime.tactile.disconnect()` 清理 `Sensor` 资源。程序退出前应调用。
 
-### 9. `TactileProcessor` 类别
+### `TactileProcessor` 类别
 
 #### 描述
 
@@ -393,7 +439,7 @@ runtime = FingerRuntime.open(
 
 除 `push_frame()` / `warmup()` 之外，`TactileProcessor` 的 `compute_deformation()`、`compute_contact()`、`read_info()`、`reset()` 调用方式与 `Sensor` 基本一致，因此可直接复用前文 `Sensor` 章节中的参数说明。
 
-### 10. 最小手指 pipeline 示例
+### 最小手指 pipeline 示例
 
 下面的流程与 `examples/finger_pipeline.py` 一致：
 
@@ -460,7 +506,7 @@ finally:
     cv2.destroyAllWindows()
 ```
 
-### 11. 关于 profile 模式
+### 关于 profile 模式
 
 `examples/finger_pipeline.py` 中的 `--profile` / `--profile-every` 是示例脚本参数，不属于 `orisys` SDK 核心 API。本质上它只是把主循环拆成：
 
@@ -472,11 +518,11 @@ finally:
 
 并对各阶段做耗时统计。因此在业务代码中，也可以按同样方式自行插入计时逻辑。
 
-# 可视化相关
+## 可视化相关
 
-## 1. `util.draw_arrows` 方法
+### `util.draw_arrows` 方法
 
-### 输入参数
+#### 输入参数
 
 * **frame**：背景图像
 * **optical_flow**：光流场
@@ -488,12 +534,12 @@ finally:
 * **below_threshold_color**：RGB格式的`uint8`颜色，如(0, 0, 255)
 * **edge_margin**: 不显示箭头边距（pixel）
 
-### 返回
+#### 返回
 `np.ndarray`  ：箭头光流可视化图像
 
-## 2. `util.draw_contact` 方法
+### `util.draw_contact` 方法
 
-### 输入参数
+#### 输入参数
 
 * **image**：背景图像
 * **contour**：轮廓
@@ -501,41 +547,35 @@ finally:
 * **point_color**：触碰点的颜色 (BGR)
 * **region_color**：轮廓的颜色 (BGR)
 
-### 返回
+#### 返回
 `np.ndarray`  ：箭头光流可视化图像
 
-***
+## 配置标定相关
 
-# 配置标定相关
+### `list_config` 方法
 
-## 1. `list_config` 方法
-
-### 描述
+#### 描述
 列出内置传感器配置参数字典。
 
-### 返回
+#### 返回
 
 * `list`: 内置传感器配置参数字典的名字列表。
-***
-## 2. `export_config` 方法
+### `export_config` 方法
 
-### 描述
+#### 描述
 导出当前传感器实例使用的配置参数字典。
 
-### 输入参数
+#### 输入参数
 * **config_name**: 需要导出的配置参数字典名字，`str`
 * **path**: 导出的路径，默认`"./config/exported_config.json"`
 
-### 返回
+#### 返回
 
 * `dict`: 导出的配置参数字典。
 
-### 保存
+#### 保存
 
 * 导出内置的`config_name`配置参数字典至`path`
-
-***
-***
 
 ## 常见问题解答 (FAQ)
 ### Q1:为什么必须先调用`get_img()`，再调用`compute_deformation()`？
@@ -556,9 +596,5 @@ A：当需要接触相关信息（如接触质心、轮廓或深度/散度图）
 A：`read_info()`按传入的`sensor.info`参数顺序返回一个元组。
 返回值顺序与参数顺序一一对应，与内部存储顺序无关。
 
-### Q5:如果没有标定文件，或拼接结果不正确，会发生什么？
-A：若未指定或未找到标定文件，系统会在需要时创建新的拼接标定数据并保存到默认路径。
-拼接结果异常通常与标定数据、拼接配置或输入图像质量有关，建议重新生成拼接标定并检查配置参数。
-
-### Q6: 运行报错：“AttributeError: 'Stitcher' object has no attribute 'pos_default'”
+### Q5: 运行报错：“AttributeError: 'Stitcher' object has no attribute 'pos_default'”
 A: 请检查视频源的编号是否正确，以及是否能正常打开视频源。在linux 使用`v4l2-ctl --list-devices` 或 Windows使用`Get-PnpDevice -PresentOnly | Where-Object { $_.Class -match '^Camera' }` 列出摄像头设备。

@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """
-Minimum UV-unroll finger tactile pipeline.
+ORY-FINGER：Minimum UV-unroll finger tactile pipeline.
 
 Offline: load Blender export -> build_or_load_domain -> unroll_map_uv.npz
 Runtime:  camera frame -> FrameUnwarper -> TactileProcessor -> forces/contact
 
-For the full demo (UV debug panels, dashboard, benchmarks) see:
-  tools/3d_patch_generation_blender/unroll_realtime.py
+Recommended entry:
+  python examples/finger_pipeline.py --camera_id 0 --config finger
+
+Current product config: ``finger`` (``dd02`` still resolves to ``dd02-ov``).
 """
 
 import argparse
@@ -24,7 +26,7 @@ def main():
     parser = argparse.ArgumentParser(description="Minimum UV-unroll finger tactile pipeline")
     parser.add_argument("--camera_id", type=int, default=0)
     parser.add_argument("--video", help="Video file path (overrides camera)")
-    parser.add_argument("--config", "-c", default="finger", help="Orisys SDK config")
+    parser.add_argument("--config", "-c", default="finger", help="Orisys SDK config name or path")
     parser.add_argument("--show", action="store_true", default=True, help="Show unrolled image window")
     parser.add_argument("--verbose", action="store_true", help="SDK verbose logs")
     args = parser.parse_args()
@@ -60,7 +62,7 @@ def main():
             if not ok:
                 break
 
-            tactile.compute_deformation(check_motion=True, threshold=0)
+            tactile.compute_deformation()
             tactile.compute_contact()
 
             fps, flow, vnormal, img, contour, centroid, depth_map, fnormal, fshearx, fsheary = tactile.read_info(
