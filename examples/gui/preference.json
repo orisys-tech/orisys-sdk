@@ -5,7 +5,7 @@
   "csv_save_dir": "./outputs/csv",
   "show_log": true,
   "show_flow_arrows": false,
-  "arrow_background": "pure_color",
+  "arrow_background": "unrolled",
   "free_rotate": true,
   "sensor_bundle_dir": "sensors/finger"
 }

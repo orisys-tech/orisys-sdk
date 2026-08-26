@@ -7,7 +7,7 @@ ORY-BOX：单传感器基础流程
 3. 按需计算接触区域
 4. 读取并可视化结果
 
-SDK version: 0.4.3
+SDK version: 0.4.4
 """
 import os
 os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0" 

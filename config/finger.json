@@ -5,7 +5,7 @@
   "camera": {
     "resolution_raw": [1280, 720],
     "fps": 30,
-    "resolution_stitch": [420, 450],
+    "resolution_stitch": [280, 300],
     "source_scale": 0.4,
     "old":[672, 728, 1,0.5],
     "work": [504, 546,1],
@@ -20,7 +20,7 @@
     "loop_closure_interval": 1,
     "algorithm": "dis",
     "dis_preset": "medium",
-    "dis_mode": 3,
+    "dis_mode": 1,
     "algorithm_list": ["raft", "dis"],
     "hhd_downsample": 5
   },
