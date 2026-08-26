@@ -570,6 +570,8 @@ class FingerDashboardWindow(QMainWindow):
         camera_id = str(camera_id).strip()
         if not camera_id:
             return
+        # Explicit camera pick clears sticky file mode and persists the live source.
+        self.settings_panel.set_video_source(camera_id)
         self.config.video = camera_id
         self._save_preferences()
         self._update_play_enabled_for_source()

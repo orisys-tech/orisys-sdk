@@ -110,6 +110,8 @@ class SettingsPanelWidget(QWidget):
         self.camera_combo = QComboBox()
         self.camera_combo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.camera_combo.setToolTip("Select an available camera")
+        # activated fires on user pick even when the index is unchanged (file → live override).
+        self.camera_combo.activated.connect(self._on_camera_combo_changed)
         self.camera_combo.currentIndexChanged.connect(self._on_camera_combo_changed)
         video_row.addWidget(self.camera_combo, 1)
         self.btn_refresh_cameras = QPushButton("Refresh")

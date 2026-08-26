@@ -90,6 +90,7 @@ def main():
                     threshold=0.4,
                     grid_spacing=10,
                     arrow_scale=1.0,
+                    valid_mask=tactile.valid_mask,
                 )
                 cv2.imshow("UV Unrolled", arrows)
 

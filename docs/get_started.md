@@ -5,7 +5,7 @@ description: 安装并运行 Orisys SDK 的基础步骤
 
 # 快速开始
 
-版本：0.4.4
+版本：0.5.0
 
 ## 简介
 本文件介绍如何上手和运行叠动视触觉传感器配套的开发套件。本套件是配合叠动视触觉传感器进行图像处理，计算形变、力以及接触信息。它可以从摄像头或视频文件中读取图像，处理后打印和展示处理后信息。  
@@ -84,9 +84,9 @@ pip install --upgrade orisys
 ### 使用 .whl 文件安装（离线或指定版本）
 从官方渠道获取 .whl 文件，文件名格式通常为：
 orisys-{版本}-{Python版本}-{Python版本}-{操作系统}_{硬件架构}.whl
-例如：orisys-0.4.4-cp310-cp310-win_amd64.whl 表示：
+例如：orisys-0.5.0-cp310-cp310-win_amd64.whl 表示：
 
-版本：0.4.4
+版本：0.5.0
 Python 版本：3.10（cp310）
 操作系统：Windows（win）
 硬件架构：64位（amd64）
@@ -97,7 +97,7 @@ Python 版本：3.10（cp310）
 
 ```bash
 # 请将文件名替换为您实际下载的文件名
-pip install orisys-0.4.4-cp310-cp310-win_amd64.whl
+pip install orisys-0.5.0-cp310-cp310-win_amd64.whl
 ```
 
 ### 安装 CuPy（可选）
@@ -139,7 +139,7 @@ python
 import orisys
 print(orisys.__version__)
 ```
-如果输出版本号（例如 0.4.4），则说明安装成功。
+如果输出版本号（例如 0.5.0），则说明安装成功。
 
 ## 使用方法
 ### 运行示例程序

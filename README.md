@@ -20,6 +20,7 @@ python examples/basic_pipeline.py -v 0 -c box
 无相机时，请先确认本机摄像头编号：
 
 - Windows（PowerShell）：`Get-PnpDevice -PresentOnly | Where-Object { $_.Class -match '^Camera' }`
+Windows 下不需要看ID，数第一个是"0"，第二个是"1"，如此类推。
 - Linux：`v4l2-ctl --list-devices`
 
 ---
