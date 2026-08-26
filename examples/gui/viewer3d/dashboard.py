@@ -588,26 +588,48 @@ class FingerDashboardWindow(QMainWindow):
             self._update_play_enabled_for_source()
 
     def _select_config(self) -> None:
+        from .preferences import (
+            default_finger_config,
+            normalize_config_preference,
+            packaged_finger_bundle_root,
+        )
+
+        start = packaged_finger_bundle_root()
+        start_dir = str(start) if start is not None else "sensors/finger"
         path, _ = QFileDialog.getOpenFileName(
             self,
             "选择配置文件",
-            "config",
+            start_dir,
             "JSON (*.json);;所有文件 (*)",
         )
         if path:
-            self.settings_panel.set_config_path(path)
-            self.config.config = path
+            config = normalize_config_preference(path) or default_finger_config()
+            self.settings_panel.set_config_path(config)
+            self.config.config = config
             self._save_preferences()
 
     def _select_finger_assets(self) -> None:
+        from .preferences import (
+            default_finger_assets_dir,
+            normalize_assets_preference,
+            packaged_finger_assets_root,
+        )
+
+        start = packaged_finger_assets_root()
+        start_dir = (
+            str(start)
+            if start is not None
+            else (self.settings_panel.finger_export_dir() or default_finger_assets_dir())
+        )
         path = QFileDialog.getExistingDirectory(
             self,
             "选择 finger 资产目录",
-            self.settings_panel.finger_export_dir() or "assets/finger",
+            start_dir,
         )
         if path:
-            self.settings_panel.set_finger_export_dir(path)
-            self.config.export_dir = path
+            assets = normalize_assets_preference(path)
+            self.settings_panel.set_finger_export_dir(assets)
+            self.config.export_dir = assets
             self._save_preferences()
 
     def _select_csv_dir(self) -> None:

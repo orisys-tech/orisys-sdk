@@ -1,10 +1,11 @@
 {
-  "video_source": "D:/repo/orisys-sdk/data/dd02/0607_1.mp4",
-  "config_path": "./config/dd02-ov.json",
-  "finger_assets_dir": "D:/repo/orisys-sdk/assets/finger/30fps-0703",
+  "video_source": "D:/repo/orisys-sdk/data/dd02-0703/1.mp4",
+  "config_path": "finger",
+  "finger_assets_dir": "sensors/finger/assets/30fps-0703",
   "csv_save_dir": "./outputs/csv",
   "show_log": true,
   "show_flow_arrows": false,
   "arrow_background": "pure_color",
-  "free_rotate": true
+  "free_rotate": true,
+  "sensor_bundle_dir": "sensors/finger"
 }

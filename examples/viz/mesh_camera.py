@@ -6,7 +6,38 @@ from pathlib import Path
 
 import numpy as np
 
-DEFAULT_FINGER_VIZ_POSE = "assets/finger/visualization/world_to_cam.npy"
+DEFAULT_FINGER_VIZ_POSE = "sensors/finger/assets/visualization/world_to_cam.npy"
+_LEGACY_FINGER_VIZ_POSES = {
+    "assets/finger/visualization/world_to_cam.npy",
+    DEFAULT_FINGER_VIZ_POSE,
+}
+
+
+def _finger_bundle_viz_pose_candidates() -> list[Path]:
+    """Resolve viz pose paths from the packaged sensors/finger bundle when present."""
+    try:
+        from orisys.configs import resolve_sensor_bundle, resolve_sensor_resource
+    except ImportError:
+        return []
+
+    found: list[Path] = []
+    bundle = resolve_sensor_bundle("finger")
+    if bundle is not None and bundle.manifest_json is not None:
+        try:
+            import json
+
+            manifest = json.loads(bundle.manifest_json.read_text(encoding="utf-8"))
+        except Exception:
+            manifest = {}
+        rel = manifest.get("viz_pose")
+        if isinstance(rel, str) and rel.strip():
+            found.append((bundle.root / rel).resolve())
+
+    packaged = resolve_sensor_resource("finger", "assets", "visualization", "world_to_cam.npy")
+    if packaged is not None:
+        found.append(packaged.resolve())
+    return found
+
 
 _CAMERA_X_ROT_90 = np.array(
     [
@@ -28,27 +59,43 @@ _CAMERA_Z_ROT_180 = np.array(
 
 
 def resolve_viz_pose_path(path: str | Path | None = None) -> Path:
-    """Resolve world_to_cam.npy from cwd or packaged asset layout."""
+    """Resolve world_to_cam.npy from sensor bundle, cwd, or packaged layout."""
     raw = Path(path or DEFAULT_FINGER_VIZ_POSE).expanduser()
     if raw.is_file():
         return raw.resolve()
 
     here = Path(__file__).resolve()
-    candidates = [
-        Path.cwd() / raw,
-        here.parents[2] / raw,
-    ]
+    candidates: list[Path] = []
+
+    # Prefer the sensors/finger bundle for default / legacy relative paths.
+    posix = raw.as_posix()
+    if path is None or posix in _LEGACY_FINGER_VIZ_POSES or not raw.is_absolute():
+        candidates.extend(_finger_bundle_viz_pose_candidates())
+
     try:
         from gui.app_paths import app_root
 
-        candidates.insert(0, app_root() / raw)
+        candidates.append(app_root() / raw)
     except ImportError:
         pass
-    for candidate in candidates:
-        if candidate.is_file():
-            return candidate.resolve()
+    candidates.extend(
+        [
+            Path.cwd() / raw,
+            here.parents[2] / raw,
+        ]
+    )
 
-    checked = ", ".join(str(p) for p in candidates)
+    unique: list[Path] = []
+    for candidate in candidates:
+        resolved = candidate.resolve()
+        if resolved not in unique:
+            unique.append(resolved)
+
+    for candidate in unique:
+        if candidate.is_file():
+            return candidate
+
+    checked = ", ".join(str(p) for p in unique)
     raise FileNotFoundError(f"Visualization pose file not found: {raw}. Checked: {checked}")
 
 
