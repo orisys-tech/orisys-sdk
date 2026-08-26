@@ -49,8 +49,23 @@ def main():
         sensor.compute_contact()
 
     
-        # 步骤 2.4：读取结果
-        fps, flow, vnormal, img, contour, centroid, depth_map, fnormal, fshearx, fsheary = sensor.read_info(
+        # 步骤 2.4：读取结果（FNORMAL/FSHEAR* 在有 sensors/box/force_calibration.json 时为标定后牛顿力；
+        # *_RAW 始终为原始积分量）
+        (
+            fps,
+            flow,
+            vnormal,
+            img,
+            contour,
+            centroid,
+            depth_map,
+            fnormal,
+            fshearx,
+            fsheary,
+            fnormal_raw,
+            fshearx_raw,
+            fsheary_raw,
+        ) = sensor.read_info(
             sensor.info.FPS,
             sensor.info.VRAW,
             sensor.info.VNORMAL,
@@ -60,7 +75,10 @@ def main():
             sensor.info.DEPTH,
             sensor.info.FNORMAL,
             sensor.info.FSHEARX,
-            sensor.info.FSHEARY
+            sensor.info.FSHEARY,
+            sensor.info.FNORMAL_RAW,
+            sensor.info.FSHEARX_RAW,
+            sensor.info.FSHEARY_RAW,
         )
         
         # 步骤 3：可视化显示
@@ -89,10 +107,13 @@ def main():
         # 应用伪彩色映射
         cv2.imshow("depth", cv2.applyColorMap(div_normalized, cv2.COLORMAP_JET))
 
-        # 步骤 3.4：打印关键结果
+        # 步骤 3.4：打印关键结果（标定力 + 原始力）
         print(
-            f"FPS={fps:.2f}, 法向力={fnormal:.4f}, 切向力X={fshearx:.4f}, "
-            f"切向力Y={fsheary:.4f}, 深度图尺寸={depth_map.shape}, 原始分辨率={sensor.img_size_raw}"
+            f"FPS={fps:.2f}, "
+            f"法向力={fnormal:.4f} N (raw={fnormal_raw:.4f}), "
+            f"切向力X={fshearx:.4f} N (raw={fshearx_raw:.4f}), "
+            f"切向力Y={fsheary:.4f} N (raw={fsheary_raw:.4f}), "
+            f"深度图尺寸={depth_map.shape}, 原始分辨率={sensor.img_size_raw}"
         )
             
         # 步骤 3.5：键盘控制
