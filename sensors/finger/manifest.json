@@ -1,0 +1,6 @@
+{
+  "name": "finger",
+  "sensor_json": "sensor.json",
+  "assets_dir": "assets/30fps-0703",
+  "viz_pose": "assets/visualization/world_to_cam.npy"
+}

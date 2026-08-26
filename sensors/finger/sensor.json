@@ -1,0 +1,35 @@
+{
+  "name": "dd02-ov",
+  "type": "single_camera",
+  "version": "1.0",
+  "camera": {
+    "resolution_raw": [1280, 720],
+    "fps": 30,
+    "resolution_stitch": [280, 300],
+    "source_scale": 0.4,
+    "old":[672, 728, 1,0.5],
+    "work": [504, 546,1],
+    "work2": [420, 450,0.8],
+    "work3": [350, 375,4,0.7],
+    "work4": [280, 300,4,0.4,0.2]
+  },
+  "tracker": {
+    "adaptive": true,
+    "lower_threshold": 12.0,
+    "upper_threshold": 18.0,
+    "loop_closure_interval": 1,
+    "algorithm": "dis",
+    "dis_preset": "medium",
+    "dis_mode": 1,
+    "algorithm_list": ["raft", "dis"],
+    "hhd_downsample": 1
+  },
+  "contact": {
+    "min_contour_area": 3000,
+    "flow_threshold": 0.2,
+    "div_threshold": 0.022,
+    "expansion_threshold": 0.01,
+    "kernel_size": [5, 5],
+    "denoise_sigma": 12
+  }
+}

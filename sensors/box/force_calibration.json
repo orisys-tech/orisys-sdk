@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "unit": "N",
+  "channels": {
+    "normal": {
+      "method": "piecewise_linear",
+      "raw_key": "fnormal",
+      "extrapolate": true,
+      "clamp_output_min": 0.0,
+      "points": [
+        [1000.0, 0.0],
+        [10000.0, 0.377],
+        [30000.0, 1.377],
+        [62000.0, 2.377]
+      ]
+    },
+    "shear": {
+      "method": "piecewise_linear",
+      "input": "components",
+      "signed": true,
+      "extrapolate": true,
+      "clamp_output_min": 0.0,
+      "points": [
+        [1000.0, 0.0],
+        [36000.0, 1.19],
+        [68000.0, 2.06]
+      ]
+    }
+  }
+}

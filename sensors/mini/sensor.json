@@ -1,0 +1,46 @@
+{
+  "name": "prototype",
+  "version": "1.0",
+  "camera": {
+    "resolution_raw": [1920, 1080],
+    "fps": 30,
+    "units": 15,
+    "units_used": 9, 
+    "resolution_stitch": [365, 365],
+    "stitch_res_list": [365,263,123,63]
+  },
+  "stitcher": {
+    "min_area_frac": 0.01,
+    "max_area_frac": 0.05,
+    "max_aspect_ratio": 50,
+    "index": [1,2,3,6,7,8,11,12,13],
+    "margin": 10,
+    "nominal_ov_pos": 100,
+    "n": [3,3],
+    "row_tol": 0.6,
+    "box_size": [250, 250],
+    "blend":"numba",
+    "blend_list": ["numpy", "numba","none"]
+  },
+  "tracker": {
+    "adaptive": true,
+    "lower_threshold": 12.0,
+    "upper_threshold": 18.0,
+    "loop_closure_interval": 1,
+    "algorithm": "dis",
+    "dis_preset": "medium",
+    "dis_mode": 3,
+    "algorithm_list": ["raft", "dis"],
+    "hhd_downsample": 3
+  },
+  "contact": {
+    "min_contour_area": 3000,
+    "flow_threshold":5,
+    "div_threshold":0.05,
+    "expansion_threshold": 0.01,
+    "kernel_size": [5,5],
+    "denoise_sigma": 12
+  }
+}
+
+
