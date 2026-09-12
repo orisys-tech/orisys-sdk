@@ -17,7 +17,7 @@ description: Orisys SDK Python API 中文参考
 
 * **vid_src** (`int | str`, 必填): 传感器 ID、相机编号或视频路径。默认为 `0`。  
 * **config_name** (`str`，可选): 传感器配置文件名称或 `json` 文件路径，用于加载对应的参数配置；例如 `box` 或 `./config/box.json`。  
-* **cal_path** (`str`，可选，已弃用): 该参数仅为兼容旧代码保留，当前版本中不再使用，传入后也会被忽略。  
+* **cal_path** (`str`，可选): 显式的 `force_calibration.json` 路径；传入后优先于 `sensors/<type>/force_calibration.json`。不传时按 `config_name` 自动加载产品包中的标定文件。 
 * **backend** (`str`，可选): 光流场解耦计算后端，默认为 `auto`，可选`cupy`,`opencl`,`cpu`。  
 * **verbose** (`bool`，可选): 是否输出初始化及运行过程中的详细日志信息，默认为 `False`。  
 
@@ -576,6 +576,26 @@ finally:
 #### 保存
 
 * 导出内置的`config_name`配置参数字典至`path`
+
+### `export_sensor_bundle` / `export_sensor_bundles` 方法
+
+#### 描述
+将已安装的 `sensors/<name>/` 传感器包复制到目标目录，供下游应用（如桌面 App）做本地可编辑配置，无需硬编码 wheel 路径。解析顺序与 `resolve_sensor_bundle` 相同（含 `importlib.resources` 打包布局）。
+
+#### 输入参数
+* **name** / **names**: 单个名字，或名字列表；`export_sensor_bundles` 省略 `names` 时导出所有可解析的产品包（`box` / `mini` / `finger`）
+* **dest_dir**: 目标根目录；实际写入 `dest_dir/<name>/`
+* **include_assets**: 默认 `False`，仅复制 `sensor.json` 以及存在的 `force_calibration.json` / `manifest.json`；为 `True` 时复制完整目录树（含 `assets/`）
+* **overwrite**: 默认 `True`；为 `False` 且目标已存在时抛出 `FileExistsError`
+
+#### 返回
+* `Path` 或 `list[Path]`：导出后的包目录路径
+
+#### CLI
+```bash
+python -m orisys.export_sensors --dest ./out/sensors --names box,mini
+python -m orisys.export_sensors --dest ./out/sensors --include-assets
+```
 
 ## 常见问题解答 (FAQ)
 ### Q1:为什么必须先调用`get_img()`，再调用`compute_deformation()`？

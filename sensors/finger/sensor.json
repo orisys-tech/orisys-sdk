@@ -22,7 +22,7 @@
     "dis_preset": "medium",
     "dis_mode": 1,
     "algorithm_list": ["raft", "dis"],
-    "hhd_downsample": 1
+    "hhd_downsample": 3
   },
   "contact": {
     "min_contour_area": 3000,

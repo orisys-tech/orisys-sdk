@@ -7,7 +7,6 @@ ORY-BOX：单传感器基础流程
 3. 按需计算接触区域
 4. 读取并可视化结果
 
-SDK version: 0.5.0
 """
 import os
 os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0" 
@@ -21,6 +20,7 @@ def main():
     parser.add_argument("--video","-v", type=str, default="0", help="视频源：摄像头编号或视频文件路径")
     parser.add_argument("--config","-c", type=str, default="box", help="配置文件名称或路径")
     parser.add_argument("--verbose","-verbose", type=bool, default=True, help="是否输出详细日志")
+    parser.add_argument("--cal_path","-cal", type=str, default=None, help="标定文件路径")
     args = parser.parse_args()
 
     # 步骤 1：创建传感器对象（必需）
@@ -28,13 +28,10 @@ def main():
     # cal_path 为标定文件路径；每台设备建议使用独立的标定文件
 
     # 输入既可以是摄像头编号，也可以是视频文件路径
-    try:
-        input = int(args.video)
-        is_camera = True
-        sensor = orisys.Sensor(input, config_name=args.config, verbose=args.verbose)
-    except:
-        is_camera = False
-        sensor = orisys.Sensor(args.video, config_name=args.config, verbose=args.verbose)
+    if args.video.isdigit():
+        sensor = orisys.Sensor(int(args.video), config_name=args.config, verbose=args.verbose, cal_path=args.cal_path)
+    else:
+        sensor = orisys.Sensor(args.video, config_name=args.config, verbose=args.verbose, cal_path=args.cal_path)
 
     print("\n按键说明：'q' 退出程序，'r' 重置追踪器。")
 

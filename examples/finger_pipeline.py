@@ -25,7 +25,7 @@ from orisys.finger import FingerRuntime
 def main():
     parser = argparse.ArgumentParser(description="Minimum UV-unroll finger tactile pipeline")
     parser.add_argument("--camera_id", type=int, default=0)
-    parser.add_argument("--video", help="Video file path (overrides camera)")
+    parser.add_argument("--video","-v", help="Video file path (overrides camera)")
     parser.add_argument("--config", "-c", default="finger", help="Orisys SDK config name or path")
     parser.add_argument("--show", action="store_true", default=True, help="Show unrolled image window")
     parser.add_argument("--verbose", action="store_true", help="SDK verbose logs")

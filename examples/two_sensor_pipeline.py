@@ -18,7 +18,6 @@
 - Windows 下必须在 if __name__ == '__main__' 中调用 mp.freeze_support()
 - 每个传感器进程都会占用独立的 GPU 显存
 
-SDK version: 0.5.0
 """
 import os
 os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0" 
