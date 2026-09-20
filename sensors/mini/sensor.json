@@ -33,6 +33,13 @@
     "algorithm_list": ["raft", "dis"],
     "hhd_downsample": 3
   },
+  "filters": {
+    "flow_ema_alpha": 1.0,
+    "force_median_window": 1,
+    "force_lowpass_cutoff_hz": 0.0,
+    "force_lowpass_order": 2,
+    "force_lowpass_sample_rate_hz": "auto"
+  },
   "contact": {
     "min_contour_area": 3000,
     "flow_threshold":5,

@@ -1,0 +1,7 @@
+{
+  "flow_ema_alpha": 0.5,
+  "force_median_window": 3,
+  "force_lowpass_cutoff_hz": 0.0,
+  "force_lowpass_order": 2,
+  "force_lowpass_sample_rate_hz": "auto"
+}
