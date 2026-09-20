@@ -29,7 +29,7 @@
     "loop_closure_interval": 1,
     "algorithm": "dis",
     "dis_preset": "medium",
-    "dis_mode": 3,
+    "dis_mode": 1,
     "algorithm_list": ["raft", "dis"],
     "hhd_downsample": 3
   },

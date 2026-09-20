@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "unit": "N",
   "channels": {
     "normal": {
@@ -14,8 +14,22 @@
         [62000.0, 2.377]
       ]
     },
-    "shear": {
+    "shear_x": {
       "method": "piecewise_linear",
+      "raw_key": "fshearx",
+      "input": "components",
+      "signed": true,
+      "extrapolate": true,
+      "clamp_output_min": 0.0,
+      "points": [
+        [1000.0, 0.0],
+        [36000.0, 1.19],
+        [68000.0, 2.06]
+      ]
+    },
+    "shear_y": {
+      "method": "piecewise_linear",
+      "raw_key": "fsheary",
       "input": "components",
       "signed": true,
       "extrapolate": true,
